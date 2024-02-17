@@ -2,15 +2,19 @@
   "name": "cloud-fpga-frontend",
   "version": "0.1.0",
   "private": true,
-  "main":"public/main.js",
+  "main": "public/main.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-"electron": "^28.2.3",
+    "electron": "^28.2.3",
+    "fs": "^0.0.1-security",
+    "plotly": "^1.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "react-router-dom": "^6.22.1",
+    "react-scripts": "^5.0.1",
+    "vcd-parser": "^1.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
