@@ -14,7 +14,7 @@ export default function Visualizer() {
       "load",
       () => {
         // this will then display a text file
-        content.innerText = JSON.stringify(VCDParse(reader.result));
+        setData(VCDParse(reader.result));
       },
       false,
     );
@@ -26,8 +26,7 @@ export default function Visualizer() {
 
   return <>
   <input type="file" onChange={previewFile} />
-  <p className="content">{data}</p>
-
+  <WaveDrawing drawing={data} />
   <div>visualizer</div>
   </>;
 }

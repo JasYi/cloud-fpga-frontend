@@ -1,5 +1,5 @@
 export default function VCDParse(text) {
-  console.log(text);
+  // console.log(text);
   let keys = Object.create(null);
   let timescale = "";
   const sections = text.split("$end");
@@ -7,11 +7,11 @@ export default function VCDParse(text) {
 
   for (let elem in sections) {
     sections[elem] = sections[elem].trim();
-    console.log(sections[elem]);
+    // console.log(sections[elem]);
     // grabbing timescale
     if (sections[elem].includes("$timescale")) {
-      timescale = sections[elem].substring(11, sections[elem].length - 1);
-      console.log("timescale: " + timescale);
+      timescale = sections[elem].substring(12, sections[elem].length);
+      // console.log("timescale: " + timescale);
     }
     // grabbing the wire names and symbols
     else if (sections[elem].includes("$var")) {
@@ -19,17 +19,17 @@ export default function VCDParse(text) {
       let symbol = subElems[3];
       let wireName = subElems[4];
       keys[symbol] = wireName;
-      console.log("symbol: " + symbol + ", wireName: " + wireName);
+      // console.log("symbol: " + symbol + ", wireName: " + wireName);
     }
     // getting the values
     else if (sections[elem][0] == "#") {
       let subElems = sections[elem].split(/[ \n]/);
       let currTime = "";
       let startFlag = false;
-      console.log("sub elements: " + subElems);
+      // console.log("sub elements: " + subElems);
       for (let i in subElems) {
         subElems[i] = subElems[i].trim();
-        console.log(subElems[i]);
+        // console.log(subElems[i]);
         let validNums = "1234567890z";
         // if it is a timestamp
         if (subElems[i][0] == "#") {
@@ -40,7 +40,7 @@ export default function VCDParse(text) {
           } else {
             startFlag = false;
           }
-          console.log("time: " + currTime);
+          // console.log("time: " + currTime);
         }
         // if it is a value
         else if (validNums.includes(subElems[i][0])) {
@@ -48,17 +48,24 @@ export default function VCDParse(text) {
           let value = subElems[i].substring(0, subElems[i].length - 1);
           if (value == "z") value = -1;
           let code = subElems[i][subElems[i].length - 1];
-          console.log("value: " + value + ", code: " + code);
+          // console.log("value: " + value + ", code: " + code);
           if (startFlag) {
             valChanges[code] = [[value, currTime]];
           } else {
             valChanges[code].push([value, currTime]);
           }
         }
-        console.log(valChanges);
+        // console.log(valChanges);
       }
     }
   }
 
-  return valChanges;
+  const temp = sections[sections.length - 1].split(/[ \n]/);
+  const endTime = temp[temp.length - 1].trim().substring(1);
+  // console.log("endtime: " + endTime);
+
+  // console.log(endTime);
+
+  // sending back the dict with the changes, the end time, and timescale
+  return [valChanges, endTime, timescale, keys];
 }
