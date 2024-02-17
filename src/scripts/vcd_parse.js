@@ -3,18 +3,13 @@ export default function VCDParse(text) {
   let keys = Object.create(null);
   let timescale = "";
   const sections = text.split("$end");
-  let dumpFlag = false;
-  const valMatrix = [];
+  const valChanges = Object.create(null);
 
   for (let elem in sections) {
     sections[elem] = sections[elem].trim();
     console.log(sections[elem]);
-    // into the dump section
-    if (dumpFlag) {
-      const subElems = sections[elem].split(" ");
-    }
     // grabbing timescale
-    else if (sections[elem].includes("$timescale")) {
+    if (sections[elem].includes("$timescale")) {
       timescale = sections[elem].substring(11, sections[elem].length - 1);
       console.log("timescale: " + timescale);
     }
@@ -26,10 +21,42 @@ export default function VCDParse(text) {
       keys[symbol] = wireName;
       console.log("symbol: " + symbol + ", wireName: " + wireName);
     }
-    // setting the flag
-    else if (sections[elem].includes("$dumpvars")) {
-      dumpFlag = true;
-      console.log("dump flag");
+    // getting the values
+    else if (sections[elem][0] == "#") {
+      let subElems = elem.split(" ");
+      let currTime = "";
+      let startFlag = false;
+      console.log("sub elements: " + subElems);
+      for (let i in subElems) {
+        subElems[i] = subElems[i].trim();
+        console.log(subElems[i]);
+        let validNums = "1234567890z";
+        // if it is a timestamp
+        if (subElems[i][0] == "#") {
+          currTime = subElems[i].substring(1, subElems[i].length);
+          // whether you're running the startup (adding the code + the values) or not
+          if (currTime == "0") {
+            startFlag = true;
+          } else {
+            startFlag = false;
+          }
+          console.log("time: " + currTime);
+        }
+        // if it is a value
+        else if (validNums.includes(subElems[i][0])) {
+          // if in startup/setup stage
+          let value = subElems[i].substring(0, subElems[i].length - 1);
+          if (value == "z") value = -1;
+          let code = subElems[i][subElems[i].length - 1];
+          console.log("value: " + value + ", code: " + code);
+          if (startFlag) {
+            valChanges[code] = [[value, currTime]];
+          } else {
+            valChanges[code].push([value, currTime]);
+          }
+        }
+        console.log(valChanges);
+      }
     }
   }
 }
