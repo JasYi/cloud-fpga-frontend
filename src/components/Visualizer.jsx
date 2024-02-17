@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from "react";
 import VCDParse from "../scripts/vcd_parse";
+import WaveDrawing from "./WaveDrawing";
 
 export default function Visualizer() {
   const [data, setData] = useState(""); 
@@ -13,7 +14,7 @@ export default function Visualizer() {
       "load",
       () => {
         // this will then display a text file
-        content.innerText = VCDParse(reader.result);
+        content.innerText = JSON.stringify(VCDParse(reader.result));
       },
       false,
     );
@@ -26,6 +27,7 @@ export default function Visualizer() {
   return <>
   <input type="file" onChange={previewFile} />
   <p className="content">{data}</p>
+
   <div>visualizer</div>
   </>;
 }

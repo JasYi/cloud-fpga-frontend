@@ -23,7 +23,7 @@ export default function VCDParse(text) {
     }
     // getting the values
     else if (sections[elem][0] == "#") {
-      let subElems = elem.split(" ");
+      let subElems = sections[elem].split(/[ \n]/);
       let currTime = "";
       let startFlag = false;
       console.log("sub elements: " + subElems);
@@ -59,4 +59,6 @@ export default function VCDParse(text) {
       }
     }
   }
+
+  return valChanges;
 }
