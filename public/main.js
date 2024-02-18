@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, nativeTheme,ipcMain } = require("electron");
 
 function createWindow() {
   // Create the browser window.
@@ -13,6 +13,10 @@ function createWindow() {
 
   //load the index.html from a url
   win.loadURL("http://localhost:3000");
+
+  ipcMain.handle('dark-mode:system', () => {
+    nativeTheme.themeSource = 'dark'
+  })
 
   // Open the DevTools.
   win.webContents.openDevTools();
