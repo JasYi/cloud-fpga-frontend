@@ -6,9 +6,6 @@ import Visualizer from "./components/Visualizer";
 function App() {
   return (
     <Router>
-      <Link to="/visualizer"> VISUALIZER</Link>
-      <Link to="/"> HOME</Link>
-
       <Routes>
         <Route exact path="/" element={<h1>HOME</h1>} />
         <Route exact path="/visualizer" element={<Visualizer />} />
