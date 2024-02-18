@@ -1,12 +1,16 @@
-const { contextBridge } = require('electron/renderer')
-const fs = window.require('fs');
+const { contextBridge } = require("electron");
+let { readdir } = require("fs/promises");
 
-// contextBridge.exposeInMainWorld('versions', {
-//    app: ()=> require('electron').remote.app.getAppPath(),
-// })
+let directoryContents = async (path) => {
+  let results = await readdir(path, { withFileTypes: true });
+  return results.map((entry) => ({
+    name: entry.name,
+    type: entry.isDirectory() ? "directory" : "file",
+  }));
+};
 
-contextBridge.exposeInMainWorld('file', {
-    readdirSync: (path) => fs.readdirSync(path),
-    statSync: (path) => fs.statSync(path),
-    join: (x,y) => pathModule.join(x,y)
- })
+let currentDirectory = () => {
+  return process.cwd();
+};
+
+contextBridge.exposeInMainWorld("api", { directoryContents, currentDirectory });

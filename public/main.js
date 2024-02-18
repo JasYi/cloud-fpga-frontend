@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require("electron");
-const path = require('node:path')
 
 function createWindow() {
   // Create the browser window.
@@ -7,14 +6,13 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+      nodeIntegration: true,
+      preload: `${__dirname}/preload.js`,
+    },
   });
 
-  
-
   //load the index.html from a url
-  win.loadURL("http://localhost:3001");
+  win.loadURL("http://localhost:3000");
 
   // Open the DevTools.
   win.webContents.openDevTools();

@@ -1,30 +1,41 @@
 // import { IconFolder, IconFile, IconFolderOpen } from './Icons'
+import React, { useState } from "react"
+import usePromise from "react-use-promise";
 
-const FilesViewer = ({ files, onBack, onOpen }) => (
-  <table class="table">
-    <tbody>
-      <tr className="clickable" onClick={onBack}>
-        <td className="icon-row">
-          {/* <IconFolderOpen /> */}
-        </td>
-        <td>...</td>
-        <td></td>
-      </tr>
+const FilesViewer = () => {
+  let [directory, setDirectory] = useState(window.api.currentDirectory())
+  let isRoot = (directory === "/")
 
-      {files.map(({ name, directory, size }) => {
-        return (
-          <tr className="clickable" onClick={() => directory && onOpen(name)}>
-            <td className="icon-row">
-              {/* {directory ? <IconFolder /> : <IconFile />} */}
-            </td>
-            <td>{name}</td>
-            <td>
-              <span className="float-end">{size}</span>
-            </td>
-          </tr>
+  let [files, filesError, filesState] = usePromise(() => (
+    window.api.directoryContents(directory)
+  ), [directory])
+
+  let navigate = (path) => {
+    if (directory === "/") {
+      setDirectory("/" + path)
+    } else {
+      setDirectory(directory + "/" + path)
+    }
+  }
+  let navigateUp = () => {
+    setDirectory(directory.split("/").slice(0, -1).join("/") || "/")
+  }
+
+  return (
+    <>
+      <h1>{directory}</h1>
+      {!isRoot && <div><button onClick={() => navigateUp()}>..</button></div> }
+      {files && files.map((entry, i) => (
+        (entry.type === "directory") ? (
+          <div key={i}>
+            <button onClick={() => navigate(entry.name)}>{entry.name}</button>
+          </div>
+        ) : (
+            <div key={i}>{entry.name}</div>
         )
-      })}
-    </tbody>
-  </table>
-)
+      ))}
+    </>
+  )
+};
+
 export default FilesViewer;
