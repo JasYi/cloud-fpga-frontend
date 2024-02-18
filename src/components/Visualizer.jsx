@@ -19,14 +19,22 @@ export default function Visualizer() {
     setKey(parsedVCD[3]);
   }, []);
 
-  return <>
+  return <div className="bg-gray-900 text-white p-5 overflow-auto">
+    <div className="absolute bg-gray-900 pl-4 left-0">
+    {
+      data == "" ? <h1>Loading...</h1> :
+      data.map((elem) => (
+          <p className="pr-4 content-center pb-9">{key[elem[0]]}</p>
+      ))
+    }
+    </div>
     { data == "" ? <h1>Loading...</h1> :
     data.map((elem) => (
-    <>
-      <p>{key[elem[0]]}</p>
-      <WaveDrawing drawing={elem}/>
-    </>
+    <div className="flex content-center border-t-[1px] border-slate-400 border-dashed w-auto">
+      <WaveDrawing drawing={elem} />
+    </div>
     ))}
+    <div className="flex content-center border-b-[1px] border-slate-400 border-dashed"></div>
 
-  </>;
+</div>;
 }
